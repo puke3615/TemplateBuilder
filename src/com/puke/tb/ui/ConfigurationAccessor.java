@@ -1,0 +1,333 @@
+package com.puke.tb.ui;
+
+import com.puke.template.Processor;
+import com.puke.template.TemplateConfig;
+import org.jetbrains.annotations.NotNull;
+import com.puke.tb.util.Helper;
+
+import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+public class ConfigurationAccessor extends JDialog implements TemplateConfig {
+    private JPanel _contentPane;
+    private JButton _buttonOK;
+    private JButton _buttonCancel;
+    private JTextField _folder;
+    private JTextField _name;
+    private JTextField _description;
+    private JList _list;
+    private JButton _add;
+    private JButton _remove;
+    private JButton _edit;
+    private JButton _down;
+    private JButton _up;
+    private JTextField _category;
+    private JButton _next;
+    private UICallback callback;
+    private String buildGradleContent;
+    private Validator validator = Validator.DEFAULT;
+    private final List<InputAccessor.InputData> inputDataList = new ArrayList<>();
+    private Processor processor;
+
+
+    public ConfigurationAccessor(Processor processor) {
+        this(processor, null);
+    }
+
+    public ConfigurationAccessor(Processor processor, FormData defaultData) {
+        this.processor = processor;
+        setTitle("Configure Template Data");
+        setContentPane(_contentPane);
+        setModal(true);
+        getRootPane().setDefaultButton(_buttonOK);
+
+        _list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        _list.addListSelectionListener(e -> {
+            if (e.getValueIsAdjusting()) {
+                int selectedIndex = _list.getSelectedIndex();
+                System.out.println(selectedIndex);
+            }
+        });
+
+        _buttonOK.addActionListener(e -> onOK());
+
+        _buttonCancel.addActionListener(e -> onCancel());
+
+        _add.addActionListener(e -> onAdd());
+        _remove.addActionListener(e -> inputNotNull(this::onRemove));
+        _edit.addActionListener(e -> inputNotNull(this::onEdit));
+
+        _up.addActionListener(e -> inputNotNull(this::onUp));
+        _down.addActionListener(e -> inputNotNull(this::onDown));
+
+        _next.addActionListener(this::onNext);
+
+        // onComplete onCancel() when cross is clicked
+        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+        addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent e) {
+                onCancel();
+            }
+        });
+
+        // onComplete onCancel() on ESCAPE
+        _contentPane.registerKeyboardAction(e -> onCancel(), KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+
+        initConfigurePage(defaultData);
+        this.processor.setTemplateConfig(this);
+    }
+
+    private void onNext(ActionEvent e) {
+        dispose();
+        TemplateTextEditor.show(processor, callback);
+    }
+
+    private void initConfigurePage(FormData defaultData) {
+        setFormData(defaultData);
+    }
+
+    private void onUp(InputAccessor.InputData selected) {
+        int index = inputDataList.indexOf(selected);
+        if (index > 0) {
+            inputDataList.remove(selected);
+            inputDataList.add(index - 1, selected);
+            notifyDataChange();
+        }
+    }
+
+    private void onDown(InputAccessor.InputData selected) {
+        int index = inputDataList.indexOf(selected);
+        int size = inputDataList.size();
+        if (index >= 0 && index < size - 1) {
+            inputDataList.remove(selected);
+            inputDataList.add(index + 1, selected);
+            notifyDataChange();
+        }
+    }
+
+    private void inputNotNull(Helper.Callback<InputAccessor.InputData> callback) {
+        InputAccessor.InputData selectedInputData = getSelectedInputData();
+        if (selectedInputData != null) {
+            callback.call(selectedInputData);
+        }
+    }
+
+    private void onAdd() {
+        InputAccessor.getInputInfo(this::addData);
+    }
+
+    private void onRemove(InputAccessor.InputData inputData) {
+        removeData(inputDataList.indexOf(inputData));
+    }
+
+    private void onEdit(InputAccessor.InputData inputData) {
+        InputAccessor.getInputInfo(handledInputData -> replaceData(inputData, handledInputData), inputData);
+    }
+
+    private InputAccessor.InputData getSelectedInputData() {
+        int selectedIndex = _list.getSelectedIndex();
+        return selectedIndex == -1 ? null : inputDataList.get(selectedIndex);
+    }
+
+    private void setData(InputAccessor.InputData... inputDatas) {
+        inputDataList.clear();
+        inputDataList.addAll(Arrays.asList(inputDatas));
+        notifyDataChange();
+    }
+
+    private void addData(InputAccessor.InputData... inputDatas) {
+        inputDataList.addAll(Arrays.asList(inputDatas));
+        notifyDataChange();
+    }
+
+    private void removeData(int index) {
+        if (index >= 0 && index < inputDataList.size()) {
+            inputDataList.remove(index);
+            notifyDataChange();
+        }
+    }
+
+    private void replaceData(InputAccessor.InputData from, InputAccessor.InputData to) {
+        if (from == null || to == null) {
+            return;
+        }
+        int fromIndex = inputDataList.indexOf(from);
+        inputDataList.remove(from);
+        inputDataList.add(fromIndex, to);
+        notifyDataChange();
+    }
+
+    private void notifyDataChange() {
+        String[] contents = new String[inputDataList.size()];
+        for (int i = 0; i < inputDataList.size(); i++) {
+            contents[i] = inputDataList.get(i).id;
+        }
+        _list.setListData(contents);
+
+    }
+
+    private void onOK() {
+        FormData formData = new FormData(getText(_folder), getText(_category), getText(_name), getText(_description), getInputData(), buildGradleContent);
+        dispose();
+        if (validator == null || validator.validate(formData)) {
+            if (callback != null) {
+                callback.onComplete();
+            }
+        } else {
+            ToastManager.error("Parameter configure error.");
+        }
+    }
+
+    @NotNull
+    private String getInputData() {
+        StringBuilder inputData = new StringBuilder();
+        for (InputAccessor.InputData data : inputDataList) {
+            inputData.append(data.parseInputInfo());
+        }
+        return inputData.toString();
+    }
+
+    private void onCancel() {
+        dispose();
+        if (callback != null) {
+            callback.onCancel();
+        }
+    }
+
+    private static String getText(JTextField textField) {
+        if (textField == null) {
+            return null;
+        }
+        return textField.getText().trim();
+    }
+
+    private static void setText(JTextField textField, String text) {
+        if (textField == null) {
+            return;
+        }
+        textField.setText(text == null ? "" : text);
+    }
+
+    @Override
+    public File getTemplatePath() {
+        String templateRootPath = getText(_folder);
+        String templatePath = String.format("%s/%s/%s", templateRootPath, Helper.getUser(), getText(_name));
+        return new File(templatePath);
+    }
+
+    @Override
+    public String getModuleName() {
+        return getText(_name);
+    }
+
+    @Override
+    public String getModuleDesc() {
+        return getText(_description);
+    }
+
+    @Override
+    public String getModuleData() {
+        return getInputData();
+    }
+
+    @Override
+    public String getModuleCategory() {
+        return getText(_category);
+    }
+
+    public static class FormData {
+        private final String folder;
+        private final String category;
+        private final String name;
+        private final String description;
+        private final String inputData;
+        private final String buildGradleContent;
+
+        public FormData(String folder, String category, String name, String description, String inputData, String buildGradleContent) {
+            this.folder = folder;
+            this.category = category;
+            this.name = name;
+            this.description = description;
+            this.inputData = inputData;
+            this.buildGradleContent = buildGradleContent;
+        }
+
+        public String getFolder() {
+            return folder;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public String getDescription() {
+            return description;
+        }
+
+        public String getInputData() {
+            return inputData;
+        }
+
+        @Override
+        public String toString() {
+            return "FormData{" +
+                    "folder='" + folder + '\'' +
+                    ", category='" + category + '\'' +
+                    ", name='" + name + '\'' +
+                    ", description='" + description + '\'' +
+                    ", inputData='" + inputData + '\'' +
+                    ", buildGradleContent='" + buildGradleContent + '\'' +
+                    '}';
+        }
+
+
+        public String getCategory() {
+            return category;
+        }
+
+        public String getBuildGradleContent() {
+            return buildGradleContent;
+        }
+    }
+
+    public interface Validator {
+        boolean validate(FormData formData);
+
+        Validator DEFAULT = formData -> !Helper.isEmpty(formData.folder, formData.category, formData.name);
+    }
+
+    public void setCallback(UICallback callback) {
+        this.callback = callback;
+    }
+
+    public void setValidator(Validator validator) {
+        this.validator = validator;
+    }
+
+    public void setFormData(FormData formData) {
+        if (formData == null) {
+            return;
+        }
+        setText(_folder, formData.folder);
+        setText(_category, formData.category);
+        setText(_name, formData.name);
+        setText(_description, formData.description);
+        this.buildGradleContent = formData.buildGradleContent;
+    }
+
+    // wrap the show method
+    public void showDialog() {
+        pack();
+        setSize(510, 450);
+        setLocationRelativeTo(null);
+        setVisible(true);
+    }
+
+}

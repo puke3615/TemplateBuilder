@@ -1,0 +1,58 @@
+<idea-plugin version="2">
+    <id>TemplateBuilder</id>
+    <name>TemplateBuilder</name>
+    <version>1.5</version>
+    <vendor email="1129090915@qq.com" url="http://puke3615.github.io">Contact me</vendor>
+
+    <description><![CDATA[
+      <b>Quick Start</b><br><hr>
+      1. Select .java or .xml(layout resource) files<br>
+      2. Key down ALT + T<br>
+      3. Configure template info<br>
+      4. Restart your IDE and try it<br>
+      <a href="https://puke3615.github.io/2017/03/06/TemplateBuilder/">More Info</a>
+    ]]></description>
+
+    <change-notes><![CDATA[
+      <b>v1.5</b><br>
+      1. Largely reduce the plugin size<br>
+      <br>
+      <b>v1.4</b><br>
+      1. Fix bug that crash occurs on startup for Android Studio 2.3<br>
+      <br>
+      <b>v1.3</b><br>
+      1. Supports editing configuration files<br>
+      2. Change some logic about building templates<br>
+      3. fix some issues<br>
+      <br>
+      <b>v1.2</b><br>
+      1. Automatically add the activity to the AndroidManifest.xml<br>
+      2. Supports editing a build.gradle file<br>
+      3. Supports select folder<br>
+      4. Supports select drawable<br>
+    ]]>
+    </change-notes>
+
+    <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
+    <idea-version since-build="141.0"/>
+
+    <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
+         on how to target different products -->
+    <!-- uncomment to enable plugin in all products
+    <depends>com.intellij.modules.lang</depends>
+    -->
+    <depends>com.intellij.modules.androidstudio</depends>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <!-- Add your extensions here -->
+    </extensions>
+
+    <actions>
+        <!-- Add your actions here -->
+        <action id="com.puke.tb.SelectionAction" class="com.puke.tb.SelectionAction" text="Generate Template">
+            <keyboard-shortcut keymap="$default" first-keystroke="alt T"/>
+            <add-to-group group-id="ToolsMenu" anchor="last"/>
+        </action>
+    </actions>
+
+</idea-plugin>
