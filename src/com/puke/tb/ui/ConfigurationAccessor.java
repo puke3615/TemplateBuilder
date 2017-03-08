@@ -328,7 +328,6 @@ public class ConfigurationAccessor extends JDialog implements TemplateConfig {
         pack();
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         int screenWidth = (int) screenSize.getWidth();
-//        setSize(510, 450);
         int width = 2 * screenWidth / 5;
         int height = width * 3 / 4;
         setSize(width, height);

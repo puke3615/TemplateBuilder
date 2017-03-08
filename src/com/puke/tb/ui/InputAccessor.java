@@ -6,6 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.*;
 import java.io.InputStream;
 
@@ -215,7 +216,11 @@ public class InputAccessor extends JDialog {
         InputAccessor dialog = new InputAccessor(defaultData);
         dialog.setCallback(callback);
         dialog.pack();
-        dialog.setSize(400, 250);
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        int screenWidth = (int) screenSize.getWidth();
+        int width = screenWidth / 3;
+        int height = width * 3 / 4;
+        dialog.setSize(width, height);
         dialog.setResizable(false);
         dialog.setLocationRelativeTo(null);
         dialog.setVisible(true);

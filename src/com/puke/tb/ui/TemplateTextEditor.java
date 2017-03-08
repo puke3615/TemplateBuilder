@@ -7,6 +7,7 @@ import org.jetbrains.annotations.NotNull;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -84,7 +85,11 @@ public class TemplateTextEditor extends JDialog {
     public static void show(Processor processor, UICallback callback) {
         TemplateTextEditor dialog = new TemplateTextEditor(processor, callback);
         dialog.pack();
-        dialog.setSize(800, 600);
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        int screenWidth = (int) screenSize.getWidth();
+        int width = 3 * screenWidth / 5;
+        int height = width * 3 / 4;
+        dialog.setSize(width, height);
         dialog.setLocationRelativeTo(null);
         dialog.setVisible(true);
     }

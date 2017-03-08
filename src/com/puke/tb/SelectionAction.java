@@ -6,14 +6,14 @@ import com.intellij.openapi.actionSystem.DataKeys;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
-import com.puke.template.Processor;
-import com.puke.template.Target;
-import org.jetbrains.annotations.Nullable;
 import com.puke.tb.ui.ConfigurationAccessor;
 import com.puke.tb.ui.ToastManager;
 import com.puke.tb.ui.UICallback;
 import com.puke.tb.util.Const;
 import com.puke.tb.util.Helper;
+import com.puke.template.Processor;
+import com.puke.template.Target;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -68,7 +68,8 @@ public class SelectionAction extends AnAction {
             for (PsiElement element : elements) {
                 PsiFile selectFile = getPsiFile(element);
                 if (selectFile != null) {
-                    files.add(selectFile.getVirtualFile().getPath());
+                    String path = selectFile.getVirtualFile().getPath().replace('\\', '/');
+                    files.add(path);
                 } else {
                     PsiElement[] children = element.getChildren();
                     files.addAll(collectSelectedFiles(children));
