@@ -10,7 +10,7 @@ public class ConfigurationAccessorTest {
 
     public static void main(String[] args) {
         Processor processor = new Processor(null);
-        ConfigurationAccessor.FormData formData = new ConfigurationAccessor.FormData("abc", "456", "123", null, null, "// Input your gradle content");
+        ConfigurationAccessor.FormData formData = new ConfigurationAccessor.FormData("abc", "456", "123", null, null);
         ConfigurationAccessor accessor = new ConfigurationAccessor(processor, formData);
         accessor.setCallback(new UICallback() {
             @Override

@@ -1,7 +1,7 @@
 <idea-plugin version="2">
     <id>TemplateBuilder</id>
     <name>TemplateBuilder</name>
-    <version>1.5</version>
+    <version>1.6</version>
     <vendor email="1129090915@qq.com" url="http://puke3615.github.io">Contact me</vendor>
 
     <description><![CDATA[
@@ -10,10 +10,18 @@
       2. Key down ALT + T<br>
       3. Configure template info<br>
       4. Restart your IDE and try it<br>
-      <a href="https://puke3615.github.io/2017/03/06/TemplateBuilder/">More Info</a>
+      <a href="https://puke3615.github.io/2017/03/06/TemplateBuilder/">More Info</a><br>
+      <br>
+      <b>Don’t repeat yourself and enjoy your time.</b><br>
     ]]></description>
 
     <change-notes><![CDATA[
+      <b>v1.6</b><br>
+      1. Supports Windows OS<br>
+      2. Supports store configuration message<br>
+      3. Add input data validating<br>
+      4. Modify ui style<br>
+      <br>
       <b>v1.5</b><br>
       1. Largely reduce the plugin size<br>
       <br>

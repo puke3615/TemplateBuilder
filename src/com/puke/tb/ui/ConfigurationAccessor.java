@@ -15,6 +15,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 public class ConfigurationAccessor extends JDialog implements TemplateConfig {
     private JPanel _contentPane;
@@ -36,11 +37,6 @@ public class ConfigurationAccessor extends JDialog implements TemplateConfig {
     private Validator validator = Validator.DEFAULT;
     private final List<InputAccessor.InputData> inputDataList = new ArrayList<>();
     private Processor processor;
-
-
-    public ConfigurationAccessor(Processor processor) {
-        this(processor, null);
-    }
 
     public ConfigurationAccessor(Processor processor, FormData defaultData) {
         this.processor = processor;
@@ -81,17 +77,17 @@ public class ConfigurationAccessor extends JDialog implements TemplateConfig {
         // onComplete onCancel() on ESCAPE
         _contentPane.registerKeyboardAction(e -> onCancel(), KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
 
-        initConfigurePage(defaultData);
+        setFormData(defaultData);
         this.processor.setTemplateConfig(this);
     }
 
     private void onNext(ActionEvent e) {
-        dispose();
-        TemplateTextEditor.show(processor, callback);
-    }
-
-    private void initConfigurePage(FormData defaultData) {
-        setFormData(defaultData);
+        FormData formData = getFormData();
+        if (validator == null || validator.validate(formData)) {
+            saveData(formData);
+            dispose();
+            TemplateTextEditor.show(processor, callback);
+        }
     }
 
     private void onUp(InputAccessor.InputData selected) {
@@ -175,15 +171,24 @@ public class ConfigurationAccessor extends JDialog implements TemplateConfig {
     }
 
     private void onOK() {
-        FormData formData = new FormData(getText(_folder), getText(_category), getText(_name), getText(_description), getInputData(), buildGradleContent);
-        dispose();
+        FormData formData = getFormData();
         if (validator == null || validator.validate(formData)) {
+            saveData(formData);
+            dispose();
             if (callback != null) {
                 callback.onComplete();
             }
-        } else {
-            ToastManager.error("Parameter configure error.");
         }
+    }
+
+    private void saveData(FormData formData) {
+        Helper.saveTemplatePath(formData.folder);
+        Helper.saveCategory(formData.category);
+    }
+
+    @NotNull
+    private FormData getFormData() {
+        return new FormData(getText(_folder), getText(_category), getText(_name), getText(_description), getInputData());
     }
 
     @NotNull
@@ -249,15 +254,13 @@ public class ConfigurationAccessor extends JDialog implements TemplateConfig {
         private final String name;
         private final String description;
         private final String inputData;
-        private final String buildGradleContent;
 
-        public FormData(String folder, String category, String name, String description, String inputData, String buildGradleContent) {
+        public FormData(String folder, String category, String name, String description, String inputData) {
             this.folder = folder;
             this.category = category;
             this.name = name;
             this.description = description;
             this.inputData = inputData;
-            this.buildGradleContent = buildGradleContent;
         }
 
         public String getFolder() {
@@ -284,7 +287,6 @@ public class ConfigurationAccessor extends JDialog implements TemplateConfig {
                     ", name='" + name + '\'' +
                     ", description='" + description + '\'' +
                     ", inputData='" + inputData + '\'' +
-                    ", buildGradleContent='" + buildGradleContent + '\'' +
                     '}';
         }
 
@@ -293,15 +295,35 @@ public class ConfigurationAccessor extends JDialog implements TemplateConfig {
             return category;
         }
 
-        public String getBuildGradleContent() {
-            return buildGradleContent;
-        }
     }
 
     public interface Validator {
         boolean validate(FormData formData);
 
-        Validator DEFAULT = formData -> !Helper.isEmpty(formData.folder, formData.category, formData.name);
+        Validator DEFAULT = formData -> {
+            if (Helper.isEmpty(formData.category)) {
+                ToastManager.warn("The template category is empty.");
+                return false;
+            }
+            if (Helper.isEmpty(formData.folder)) {
+                ToastManager.warn("The template folder is empty.");
+                return false;
+            }
+            File templateDir = new File(formData.folder);
+            if (!templateDir.exists() || !templateDir.isDirectory()) {
+                ToastManager.warn("The template folder not found.");
+                return false;
+            }
+            if (Helper.isEmpty(formData.name)) {
+                ToastManager.warn("The template name is empty.");
+                return false;
+            }
+            if (new File(templateDir, formData.name).exists()) {
+                String message = String.format(Locale.getDefault(), "The template named %s already exists, overwrite it?", formData.name);
+                return JOptionPane.showConfirmDialog(null, message) == JOptionPane.YES_OPTION;
+            }
+            return true;
+        };
     }
 
     public void setCallback(UICallback callback) {
@@ -320,7 +342,6 @@ public class ConfigurationAccessor extends JDialog implements TemplateConfig {
         setText(_category, formData.category);
         setText(_name, formData.name);
         setText(_description, formData.description);
-        this.buildGradleContent = formData.buildGradleContent;
     }
 
     // wrap the show method

@@ -9,7 +9,6 @@ import com.intellij.psi.PsiFile;
 import com.puke.tb.ui.ConfigurationAccessor;
 import com.puke.tb.ui.ToastManager;
 import com.puke.tb.ui.UICallback;
-import com.puke.tb.util.Const;
 import com.puke.tb.util.Helper;
 import com.puke.template.Processor;
 import com.puke.template.Target;
@@ -45,7 +44,7 @@ public class SelectionAction extends AnAction {
         Target target = targetResolver.resolveFiles(new ArrayList<>(selectedFiles));
         Processor processor = new Processor(target);
 
-        ConfigurationAccessor.FormData formData = new ConfigurationAccessor.FormData(Const.MAC_TEMPLATE_PATH, Helper.getUser(), projectName, null, null, null);
+        ConfigurationAccessor.FormData formData = new ConfigurationAccessor.FormData(Helper.getTemplatePath(), Helper.getCategory(), projectName, null, null);
         ConfigurationAccessor accessor = new ConfigurationAccessor(processor, formData);
         accessor.setCallback(new UICallback() {
             @Override

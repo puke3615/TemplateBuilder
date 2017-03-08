@@ -219,9 +219,8 @@ public class InputAccessor extends JDialog {
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         int screenWidth = (int) screenSize.getWidth();
         int width = screenWidth / 3;
-        int height = width * 3 / 4;
+        int height = width * 3 / 5;
         dialog.setSize(width, height);
-        dialog.setResizable(false);
         dialog.setLocationRelativeTo(null);
         dialog.setVisible(true);
     }
