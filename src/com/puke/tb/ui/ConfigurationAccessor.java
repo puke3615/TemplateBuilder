@@ -6,6 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import com.puke.tb.util.Helper;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
@@ -325,7 +326,12 @@ public class ConfigurationAccessor extends JDialog implements TemplateConfig {
     // wrap the show method
     public void showDialog() {
         pack();
-        setSize(510, 450);
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        int screenWidth = (int) screenSize.getWidth();
+//        setSize(510, 450);
+        int width = 2 * screenWidth / 5;
+        int height = width * 3 / 4;
+        setSize(width, height);
         setLocationRelativeTo(null);
         setVisible(true);
     }
