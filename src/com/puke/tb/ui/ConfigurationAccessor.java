@@ -4,6 +4,7 @@ import com.puke.template.Processor;
 import com.puke.template.TemplateConfig;
 import org.jetbrains.annotations.NotNull;
 import com.puke.tb.util.Helper;
+import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import java.awt.*;
@@ -188,7 +189,7 @@ public class ConfigurationAccessor extends JDialog implements TemplateConfig {
 
     @NotNull
     private FormData getFormData() {
-        return new FormData(getText(_folder), getText(_category), getText(_name), getText(_description), getInputData());
+        return new FormData(getFolder(), getText(_category), getText(_name), getText(_description), getInputData());
     }
 
     @NotNull
@@ -223,9 +224,19 @@ public class ConfigurationAccessor extends JDialog implements TemplateConfig {
 
     @Override
     public File getTemplatePath() {
-        String templateRootPath = getText(_folder);
-        String templatePath = String.format("%s/%s/%s", templateRootPath, Helper.getUser(), getText(_name));
+        String templateRootPath = getFolder();
+        return getFinalTemplatePath(templateRootPath, getText(_name));
+    }
+
+    private static File getFinalTemplatePath(String folder, String name) {
+        String templatePath = String.format("%s/%s/%s", folder, Helper.getUser(), name);
         return new File(templatePath);
+    }
+
+    @Nullable
+    private String getFolder() {
+        String folder = getText(_folder);
+        return folder == null ? null : folder.replace('\\', '/');
     }
 
     @Override
@@ -318,7 +329,8 @@ public class ConfigurationAccessor extends JDialog implements TemplateConfig {
                 ToastManager.warn("The template name is empty.");
                 return false;
             }
-            if (new File(templateDir, formData.name).exists()) {
+            File finalTemplatePath = getFinalTemplatePath(formData.folder, formData.name);
+            if (finalTemplatePath.exists() && finalTemplatePath.isDirectory()) {
                 String message = String.format(Locale.getDefault(), "The template named %s already exists, overwrite it?", formData.name);
                 return JOptionPane.showConfirmDialog(null, message) == JOptionPane.YES_OPTION;
             }

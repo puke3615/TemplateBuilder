@@ -1,7 +1,7 @@
 <idea-plugin version="2">
     <id>TemplateBuilder</id>
     <name>TemplateBuilder</name>
-    <version>1.6</version>
+    <version>1.7</version>
     <vendor email="1129090915@qq.com" url="http://puke3615.github.io">Contact me</vendor>
 
     <description><![CDATA[
@@ -16,6 +16,10 @@
     ]]></description>
 
     <change-notes><![CDATA[
+      <b>v1.7</b><br>
+      1. Fix bug on Windows OS<br>
+      2. Show confirm dialog when template already exists<br>
+      <br>
       <b>v1.6</b><br>
       1. Supports Windows OS<br>
       2. Supports store configuration message<br>
