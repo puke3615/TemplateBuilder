@@ -1,6 +1,6 @@
 [English Version](README.md)
 
-*在阅读本文之前，默认你是了解 `Android Studio Template`的，知道为什么要使用它，如果不清楚它是什么，可以在网上自行查阅相关资料，当然也可以直接[点击这里](../../../../2017/03/10/Android%20Studio%20Template/)查看一下同行们对它的评价。*
+*在阅读本文之前，默认你是了解 `Android Studio Template`的，知道为什么要使用它，如果不清楚它是什么，可以在网上自行查阅相关资料，当然也可以直接[点击这里](https://puke3615.github.io/2017/03/10/Android%20Studio%20Template/)查看一下同行们对它的评价。*
 
 ## WHAT
 
