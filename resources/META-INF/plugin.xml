@@ -5,12 +5,13 @@
     <vendor email="1129090915@qq.com" url="http://puke3615.github.io">Contact me</vendor>
 
     <description><![CDATA[
+      <b><a href="https://puke3615.github.io/2017/03/06/TemplateBuilder/">Click Here For User Guide</a><br></b>
+      <br>
       <b>Quick Start</b><br><hr>
       1. Select .java or .xml(layout resource) files<br>
       2. Key down ALT + T<br>
       3. Configure template info<br>
       4. Restart your IDE and try it<br>
-      <a href="https://puke3615.github.io/2017/03/06/TemplateBuilder/">Click Here For User Guide</a><br>
       <br>
       <b>Don't repeat yourself and enjoy your time.</b><br>
     ]]></description>
