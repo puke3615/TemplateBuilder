@@ -12,13 +12,13 @@ TemplateBuilder is an AS plug-in that can help us to quickly generate Android St
 
 Open Android Studio, `Preferences` -- `Plugins` -- `Brown Repositories`, search `TemplateBuilder` and download, then restart the IDE and try.
 
-![](img1.png)
+![](images/img1.png)
 
 #### Instructions
 
 Here we take an example of the extraction of an MVP template, first select the need to create a template for the template file (if you need to select a package below all the files, you can directly select the package), and then press the shortcut `ALT + T` to start the plug, you can see the following interface
 
-![](img3.png)
+![](images/img3.png)
 
 Here to explain the corresponding content of the interface
 
@@ -32,15 +32,15 @@ Here to explain the corresponding content of the interface
 
 * `Input data area`  If you want to enhance the compatibility of the template will use it, it corresponds to the AS template Template.xml <parameter /> tag, that is, each of the following configuration items.
 
-  ![](img5.png)
+  ![](images/img5.png)
 
 The whole UI interface is clear, if you just want to simply extract the template you write, you only need to enter the `Template Name` and `Template Description` can, of course, if you do not want to enter this can also be omitted. Then click `Finish`, you can see the bottom of the IDE pop-up as shown below the prompt, then you have been successful, restart the IDE to use the template.
 
-![](img4.png)
+![](images/img4.png)
 
 Here, if you understand the `Android Studio Template` production process, you may feel that compared to their own manual to do this is simple, but the flexibility to reduce a lot. For example, when there is a group dependency in the template, you need to add the corresponding dependencies in `build.gradle.ftl`. After importing the template, you will need to edit `recipe.xml.ftl` when you want to open a file automatically. In which version, you need to edit `template.xml` and so on. If you have this need, you can click `Next` to replace the `Finish`, click on the following you will be able to see the following interface, where you need to focus on all the configuration file editing, editing directly click `OK` to start automatically generated.
 
-![](img6.png)
+![](images/img6.png)
 
 ## WHY
 
