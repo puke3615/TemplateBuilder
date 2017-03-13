@@ -5,10 +5,10 @@ import com.puke.template.TextOperation;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,12 +57,6 @@ public class TemplateTextEditor extends JDialog {
                     _tab.add(textOperation.getActualFileName(), textComponent.getPanel());
                     textComponents.add(textComponent);
                 });
-        _tab.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent e) {
-
-            }
-        });
     }
 
     private void onOK() {

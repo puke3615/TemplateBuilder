@@ -29,7 +29,7 @@ public class SelectionAction extends AnAction {
 
     @Override
     public void actionPerformed(AnActionEvent e) {
-        Helper.execute(this::operate, e, e.getProject());
+        Helper.execute(this::operate, e);
     }
 
     private void operate(AnActionEvent event) {
@@ -49,7 +49,7 @@ public class SelectionAction extends AnAction {
         accessor.setCallback(new UICallback() {
             @Override
             public void onComplete() {
-                processor.process();
+                Helper.execute(obj -> processor.process(), null);
                 ToastManager.info("Generate completed, restart IDE please.");
             }
 

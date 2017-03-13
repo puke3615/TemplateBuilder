@@ -1,7 +1,6 @@
 package com.puke.tb.util;
 
 import com.intellij.ide.util.PropertiesComponent;
-import com.intellij.openapi.project.Project;
 import com.puke.tb.ui.ToastManager;
 
 /**
@@ -53,7 +52,7 @@ public class Helper {
         void call(T data);
     }
 
-    public static <T> void execute(Callback<T> callback, T data, Project project) {
+    public static <T> void execute(Callback<T> callback, T data) {
         try {
             callback.call(data);
         } catch (Throwable e) {
