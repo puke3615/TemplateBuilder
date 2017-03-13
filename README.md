@@ -1,4 +1,4 @@
-[中文版](doc/md/TemplateBuilder中文版.md)
+[中文版](doc/md/README中文版.md)
 
 *Before reading this article, by default, you understand the Android Studio Template, and know why you want to use it, if you do not know what it is, you can check the relevant information on the Internet, of course, you can [click here](../../../../2017/03/10/Android%20Studio%20Template/) to see the peer to its evaluation.*
 
