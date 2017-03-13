@@ -1,7 +1,7 @@
 <idea-plugin version="2">
     <id>TemplateBuilder</id>
     <name>TemplateBuilder</name>
-    <version>1.7</version>
+    <version>1.8</version>
     <vendor email="1129090915@qq.com" url="http://puke3615.github.io">Contact me</vendor>
 
     <description><![CDATA[
@@ -10,12 +10,15 @@
       2. Key down ALT + T<br>
       3. Configure template info<br>
       4. Restart your IDE and try it<br>
-      <a href="https://puke3615.github.io/2017/03/06/TemplateBuilder/">More Info</a><br>
+      <a href="https://puke3615.github.io/2017/03/06/TemplateBuilder/">Click Here For User Guide</a><br>
       <br>
-      <b>Don’t repeat yourself and enjoy your time.</b><br>
+      <b>Don't repeat yourself and enjoy your time.</b><br>
     ]]></description>
 
     <change-notes><![CDATA[
+      <b>v1.8</b><br>
+      1. Fix the issue that the build.gradle.ftl file can't be merged sometimes<br>
+      <br>
       <b>v1.7</b><br>
       1. Fix bug on Windows OS<br>
       2. Show confirm dialog when template already exists<br>
@@ -53,7 +56,7 @@
     <!-- uncomment to enable plugin in all products
     <depends>com.intellij.modules.lang</depends>
     -->
-    <!--<depends>com.intellij.modules.androidstudio</depends>-->
+    <depends>com.intellij.modules.androidstudio</depends>
 
     <extensions defaultExtensionNs="com.intellij">
         <!-- Add your extensions here -->
