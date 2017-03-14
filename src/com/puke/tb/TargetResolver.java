@@ -2,6 +2,7 @@ package com.puke.tb;
 
 import com.puke.template.Target;
 import com.puke.template.TemplateHelper;
+import org.apache.xml.resolver.apps.resolver;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -12,20 +13,16 @@ public class TargetResolver {
     public static final String SRC_MAIN_RES = "src/main/res/";
     public static final String SRC_MAIN = "src/main/";
     public static final String ANDROID_MANIFEST = "AndroidManifest.xml";
-    private final ManifestPathResolver resolver;
-
-    public TargetResolver() {
-        resolver = new ManifestPathResolver();
-    }
 
     @NotNull
     Target resolveFiles(List<String> selectedFiles) {
         Target target = new Target();
-        injectTarget(target, selectedFiles);
+        injectTarget(target, selectedFiles, new ManifestPathResolver());
         return target;
     }
 
-    private void injectTarget(@NotNull Target target, List<String> selectedFiles) {
+    private void injectTarget(@NotNull Target target, List<String> selectedFiles, ManifestPathResolver manifestPathResolver) {
+
         String manifest = null;
         List<String> javaFiles = target.getJavaFiles();
         List<String> layoutFiles = target.getLayoutFiles();
@@ -34,24 +31,24 @@ public class TargetResolver {
             File file = new File(filePath);
             if (file.isDirectory()) {
                 List<String> subFiles = Arrays.asList(file.list());
-                injectTarget(target, subFiles);
+                injectTarget(target, subFiles, manifestPathResolver);
                 continue;
             }
             if (filePath.endsWith(".java")) {
                 javaFiles.add(filePath);
-                manifest = resolver.getManifestPath(filePath);
+                manifest = manifestPathResolver.getManifestPath(filePath);
                 addActivityItemIfNeed(target, filePath, manifest);
                 continue;
             }
             if (filePath.contains(SRC_MAIN_RES)) {
                 if (filePath.contains("drawable")) {
                     drawableFiles.add(filePath);
-                    manifest = resolver.getManifestPath(filePath);
+                    manifest = manifestPathResolver.getManifestPath(filePath);
                     continue;
                 }
                 if (filePath.endsWith(".xml") && filePath.contains("layout")) {
                     layoutFiles.add(filePath);
-                    manifest = resolver.getManifestPath(filePath);
+                    manifest = manifestPathResolver.getManifestPath(filePath);
                     continue;
                 }
             }
@@ -75,7 +72,7 @@ public class TargetResolver {
         }
     }
 
-    private class ManifestPathResolver {
+    private static class ManifestPathResolver {
 
         private String manifestPath;
 

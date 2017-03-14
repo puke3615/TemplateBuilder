@@ -3,6 +3,7 @@ package com.puke.tb;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.DataKeys;
+import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
@@ -38,13 +39,11 @@ public class SelectionAction extends AnAction {
         if (selectedFiles.size() == 0) {
             throw new RuntimeException("No selected files found.");
         }
-        Project project = event.getProject();
-        String projectName = project == null ? "" : project.getName();
-
+        String category = getDefaultCategory(event);
         Target target = targetResolver.resolveFiles(new ArrayList<>(selectedFiles));
         Processor processor = new Processor(target);
 
-        ConfigurationAccessor.FormData formData = new ConfigurationAccessor.FormData(Helper.getTemplatePath(), Helper.getCategory(), projectName, null, null);
+        ConfigurationAccessor.FormData formData = new ConfigurationAccessor.FormData(Helper.getTemplatePath(), Helper.getCategory(), category, null, null);
         ConfigurationAccessor accessor = new ConfigurationAccessor(processor, formData);
         accessor.setCallback(new UICallback() {
             @Override
@@ -59,6 +58,16 @@ public class SelectionAction extends AnAction {
             }
         });
         accessor.showDialog();
+    }
+
+    private String getDefaultCategory(AnActionEvent event) {
+        Module module = event.getData(DataKeys.MODULE);
+        String category = module == null ? null : module.getName();
+        if (Helper.isEmpty(category)) {
+            Project project = event.getProject();
+            category = project == null ? "" : project.getName();
+        }
+        return category;
     }
 
     private Set<String> collectSelectedFiles(PsiElement[] elements) {
