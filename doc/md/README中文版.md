@@ -18,7 +18,7 @@
 
 打开Android Studio，`Preferences` -- `Plugins` -- `Brown Repositories`,  搜索`TemplateBuilder` 并下载，下载之后重启IDE即可使用。
 
-![](doc/images/img1.png)
+![](../doc/images/img1.png)
 
 #### 使用
 
