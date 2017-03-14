@@ -1,4 +1,4 @@
-[中文版](doc/md/README中文版.md)
+[中文版](README中文版.md)
 
 > `Statement`
 >
