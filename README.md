@@ -1,6 +1,12 @@
 [中文版](doc/md/README中文版.md)
 
-*Before reading this article, by default, you understand the Android Studio Template, and know why you want to use it, if you do not know what it is, you can check the relevant information on the Internet, of course, you can [click here](https://puke3615.github.io/2017/03/10/Android%20Studio%20Template/) to see the peer to its evaluation.*
+> `Statement`
+>
+> Android Studio templates include the following three, here is the third Multi Template. Before reading this article, Acquiescence you know the template, know why to use it, if it is not clear what it is, you can check the relevant information online, of course, you can also [click here](https://puke3615.github.io/2017/03/10/Android%20Studio%20Template/) to see the peer to its evaluation
+>
+> - Live Template：Code snippet level
+> - File Template：Single file level
+> - Multi Template：Multiple file levels (hereinafter referred to as `Android Studio Template`)
 
 ## WHAT
 
