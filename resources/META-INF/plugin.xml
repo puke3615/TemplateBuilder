@@ -1,7 +1,7 @@
 <idea-plugin version="2">
     <id>TemplateBuilder</id>
     <name>TemplateBuilder</name>
-    <version>1.9</version>
+    <version>1.10</version>
     <vendor email="1129090915@qq.com" url="http://puke3615.github.io">Contact me</vendor>
 
     <description><![CDATA[
@@ -17,6 +17,9 @@
     ]]></description>
 
     <change-notes><![CDATA[
+      <b>v1.10</b><br>
+      1. Delete old template when perform overwriting operation<br>
+      <br>
       <b>v1.9</b><br>
       1. Fix bug that templates can't be generated in different package path<br>
       2. Change default template name from project name to module name<br>
