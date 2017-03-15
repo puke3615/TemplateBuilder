@@ -331,6 +331,7 @@ public class ConfigurationAccessor extends JDialog implements TemplateConfig {
             }
             File finalTemplatePath = getFinalTemplatePath(formData.folder, formData.name);
             if (finalTemplatePath.exists() && finalTemplatePath.isDirectory()) {
+                Helper.deleteFile(finalTemplatePath);
                 String message = String.format(Locale.getDefault(), "The template named %s already exists, overwrite it?", formData.name);
                 return JOptionPane.showConfirmDialog(null, message) == JOptionPane.YES_OPTION;
             }

@@ -2,6 +2,9 @@ package com.puke.tb.util;
 
 import com.intellij.ide.util.PropertiesComponent;
 import com.puke.tb.ui.ToastManager;
+import org.jetbrains.annotations.NotNull;
+
+import java.io.File;
 
 /**
  * @author zijiao
@@ -72,6 +75,22 @@ public class Helper {
 
     public static String getUser() {
         return System.getProperty("user.name");
+    }
+
+    public static void deleteFile(@NotNull File file) {
+        if (!file.exists()) {
+            return;
+        }
+        if (file.isFile()) {
+            file.delete();
+        } else if(file.isDirectory()) {
+            File[] files = file.listFiles();
+            if (files != null) {
+                for (File f : files) {
+                    deleteFile(f);
+                }
+            }
+        }
     }
 
 }
