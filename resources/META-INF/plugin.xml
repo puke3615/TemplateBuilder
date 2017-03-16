@@ -1,7 +1,7 @@
 <idea-plugin version="2">
     <id>TemplateBuilder</id>
     <name>TemplateBuilder</name>
-    <version>1.10</version>
+    <version>2.0</version>
     <vendor email="1129090915@qq.com" url="http://puke3615.github.io">Contact me</vendor>
 
     <description><![CDATA[
@@ -17,6 +17,11 @@
     ]]></description>
 
     <change-notes><![CDATA[
+      <b>v2.0</b><br>
+      1. Compat for jdk1.6+<br>
+      2. Compat multi IntelliJ products<br>
+      3. Optimize judgment about Activity<br>
+      <br>
       <b>v1.10</b><br>
       1. Delete old template when perform overwriting operation<br>
       <br>
