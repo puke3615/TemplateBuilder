@@ -30,25 +30,35 @@ public class SelectionAction extends AnAction {
 
     @Override
     public void actionPerformed(AnActionEvent e) {
-        Helper.execute(this::operate, e);
+        Helper.execute(new Helper.Callback<AnActionEvent>() {
+            @Override
+            public void call(AnActionEvent data) {
+                operate(data);
+            }
+        }, e);
     }
 
     private void operate(AnActionEvent event) {
         ToastManager.setProject(event.getProject());
-        Set<String> selectedFiles = collectSelectedFiles(event.getData(DataKeys.PSI_ELEMENT_ARRAY));
+        Set<SelectItem> selectedFiles = collectSelectedFiles(event.getData(DataKeys.PSI_ELEMENT_ARRAY));
         if (selectedFiles.size() == 0) {
             throw new RuntimeException("No selected files found.");
         }
         String category = getDefaultCategory(event);
-        Target target = targetResolver.resolveFiles(new ArrayList<>(selectedFiles));
-        Processor processor = new Processor(target);
+        Target target = targetResolver.resolveFiles(new ArrayList<SelectItem>(selectedFiles));
+        final Processor processor = new Processor(target);
 
         ConfigurationAccessor.FormData formData = new ConfigurationAccessor.FormData(Helper.getTemplatePath(), Helper.getCategory(), category, null, null);
         ConfigurationAccessor accessor = new ConfigurationAccessor(processor, formData);
         accessor.setCallback(new UICallback() {
             @Override
             public void onComplete() {
-                Helper.execute(obj -> processor.process(), null);
+                Helper.execute(new Helper.Callback<Void>() {
+                    @Override
+                    public void call(Void data) {
+                        processor.process();
+                    }
+                }, null);
                 ToastManager.info("Generate completed, restart IDE please.");
             }
 
@@ -70,14 +80,14 @@ public class SelectionAction extends AnAction {
         return category;
     }
 
-    private Set<String> collectSelectedFiles(PsiElement[] elements) {
-        Set<String> files = new HashSet<>();
+    private static Set<SelectItem> collectSelectedFiles(PsiElement[] elements) {
+        Set<SelectItem> files = new HashSet<SelectItem>();
         if (elements != null) {
             for (PsiElement element : elements) {
                 PsiFile selectFile = getPsiFile(element);
                 if (selectFile != null) {
                     String path = selectFile.getVirtualFile().getPath().replace('\\', '/');
-                    files.add(path);
+                    files.add(new SelectItem(path, element));
                 } else {
                     PsiElement[] children = element.getChildren();
                     files.addAll(collectSelectedFiles(children));

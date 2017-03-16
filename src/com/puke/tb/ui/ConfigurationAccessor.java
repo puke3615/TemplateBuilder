@@ -1,17 +1,16 @@
 package com.puke.tb.ui;
 
+import com.puke.tb.util.Helper;
 import com.puke.template.Processor;
 import com.puke.template.TemplateConfig;
 import org.jetbrains.annotations.NotNull;
-import com.puke.tb.util.Helper;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import java.awt.event.*;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -36,7 +35,7 @@ public class ConfigurationAccessor extends JDialog implements TemplateConfig {
     private UICallback callback;
     private String buildGradleContent;
     private Validator validator = Validator.DEFAULT;
-    private final List<InputAccessor.InputData> inputDataList = new ArrayList<>();
+    private final List<InputAccessor.InputData> inputDataList = new ArrayList<InputAccessor.InputData>();
     private Processor processor;
 
     public ConfigurationAccessor(Processor processor, FormData defaultData) {
@@ -47,25 +46,88 @@ public class ConfigurationAccessor extends JDialog implements TemplateConfig {
         getRootPane().setDefaultButton(_buttonOK);
 
         _list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        _list.addListSelectionListener(e -> {
-            if (e.getValueIsAdjusting()) {
-                int selectedIndex = _list.getSelectedIndex();
-                System.out.println(selectedIndex);
+        _list.addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                if (e.getValueIsAdjusting()) {
+                    int selectedIndex = _list.getSelectedIndex();
+                    System.out.println(selectedIndex);
+                }
             }
         });
 
-        _buttonOK.addActionListener(e -> onOK());
+        _buttonOK.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                onOK();
+            }
+        });
 
-        _buttonCancel.addActionListener(e -> onCancel());
+        _buttonCancel.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                onCancel();
+            }
+        });
 
-        _add.addActionListener(e -> onAdd());
-        _remove.addActionListener(e -> inputNotNull(this::onRemove));
-        _edit.addActionListener(e -> inputNotNull(this::onEdit));
+        _add.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                onAdd();
+            }
+        });
+        _remove.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                inputNotNull(new Helper.Callback<InputAccessor.InputData>() {
+                    @Override
+                    public void call(InputAccessor.InputData data) {
+                        onRemove(data);
+                    }
+                });
+            }
+        });
+        _edit.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                inputNotNull(new Helper.Callback<InputAccessor.InputData>() {
+                    @Override
+                    public void call(InputAccessor.InputData data) {
+                        onEdit(data);
+                    }
+                });
+            }
+        });
 
-        _up.addActionListener(e -> inputNotNull(this::onUp));
-        _down.addActionListener(e -> inputNotNull(this::onDown));
+        _up.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                inputNotNull(new Helper.Callback<InputAccessor.InputData>() {
+                    @Override
+                    public void call(InputAccessor.InputData data) {
+                        onUp(data);
+                    }
+                });
+            }
+        });
+        _down.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                inputNotNull(new Helper.Callback<InputAccessor.InputData>() {
+                    @Override
+                    public void call(InputAccessor.InputData data) {
+                        onRemove(data);
+                    }
+                });
+            }
+        });
 
-        _next.addActionListener(this::onNext);
+        _next.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                onNext(e);
+            }
+        });
 
         // onComplete onCancel() when cross is clicked
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
@@ -76,7 +138,12 @@ public class ConfigurationAccessor extends JDialog implements TemplateConfig {
         });
 
         // onComplete onCancel() on ESCAPE
-        _contentPane.registerKeyboardAction(e -> onCancel(), KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+        _contentPane.registerKeyboardAction(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                onCancel();
+            }
+        }, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
 
         setFormData(defaultData);
         this.processor.setTemplateConfig(this);
@@ -118,15 +185,25 @@ public class ConfigurationAccessor extends JDialog implements TemplateConfig {
     }
 
     private void onAdd() {
-        InputAccessor.getInputInfo(this::addData);
+        InputAccessor.getInputInfo(new InputAccessor.Callback() {
+            @Override
+            public void call(InputAccessor.InputData inputData) {
+                addData(inputData);
+            }
+        });
     }
 
     private void onRemove(InputAccessor.InputData inputData) {
         removeData(inputDataList.indexOf(inputData));
     }
 
-    private void onEdit(InputAccessor.InputData inputData) {
-        InputAccessor.getInputInfo(handledInputData -> replaceData(inputData, handledInputData), inputData);
+    private void onEdit(final InputAccessor.InputData inputData) {
+        InputAccessor.getInputInfo(new InputAccessor.Callback() {
+            @Override
+            public void call(InputAccessor.InputData handledInputData) {
+                replaceData(inputData, handledInputData);
+            }
+        }, inputData);
     }
 
     private InputAccessor.InputData getSelectedInputData() {
@@ -311,31 +388,34 @@ public class ConfigurationAccessor extends JDialog implements TemplateConfig {
     public interface Validator {
         boolean validate(FormData formData);
 
-        Validator DEFAULT = formData -> {
-            if (Helper.isEmpty(formData.category)) {
-                ToastManager.warn("The template category is empty.");
-                return false;
+        Validator DEFAULT = new Validator() {
+            @Override
+            public boolean validate(FormData formData) {
+                if (Helper.isEmpty(formData.category)) {
+                    ToastManager.warn("The template category is empty.");
+                    return false;
+                }
+                if (Helper.isEmpty(formData.folder)) {
+                    ToastManager.warn("The template folder is empty.");
+                    return false;
+                }
+                File templateDir = new File(formData.folder);
+                if (!templateDir.exists() || !templateDir.isDirectory()) {
+                    ToastManager.warn("The template folder not found.");
+                    return false;
+                }
+                if (Helper.isEmpty(formData.name)) {
+                    ToastManager.warn("The template name is empty.");
+                    return false;
+                }
+                File finalTemplatePath = getFinalTemplatePath(formData.folder, formData.name);
+                if (finalTemplatePath.exists() && finalTemplatePath.isDirectory()) {
+                    Helper.deleteFile(finalTemplatePath);
+                    String message = String.format(Locale.getDefault(), "The template named %s already exists, overwrite it?", formData.name);
+                    return JOptionPane.showConfirmDialog(null, message) == JOptionPane.YES_OPTION;
+                }
+                return true;
             }
-            if (Helper.isEmpty(formData.folder)) {
-                ToastManager.warn("The template folder is empty.");
-                return false;
-            }
-            File templateDir = new File(formData.folder);
-            if (!templateDir.exists() || !templateDir.isDirectory()) {
-                ToastManager.warn("The template folder not found.");
-                return false;
-            }
-            if (Helper.isEmpty(formData.name)) {
-                ToastManager.warn("The template name is empty.");
-                return false;
-            }
-            File finalTemplatePath = getFinalTemplatePath(formData.folder, formData.name);
-            if (finalTemplatePath.exists() && finalTemplatePath.isDirectory()) {
-                Helper.deleteFile(finalTemplatePath);
-                String message = String.format(Locale.getDefault(), "The template named %s already exists, overwrite it?", formData.name);
-                return JOptionPane.showConfirmDialog(null, message) == JOptionPane.YES_OPTION;
-            }
-            return true;
         };
     }
 

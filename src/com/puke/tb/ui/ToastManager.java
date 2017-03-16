@@ -21,20 +21,35 @@ public class ToastManager {
     private static WeakReference<Project> projectWeakReference;
 
     public static void setProject(Project project) {
-        projectWeakReference = new WeakReference<>(project);
+        projectWeakReference = new WeakReference<Project>(project);
     }
 
-    public static void error(String message) {
-        ifProjectExist(project -> toast(project, MessageType.ERROR, message));
+    public static void error(final String message) {
+        ifProjectExist(new Helper.Callback<Project>() {
+            @Override
+            public void call(Project project) {
+                toast(project, MessageType.ERROR, message);
+            }
+        });
         projectWeakReference = null;
     }
 
-    public static void info(String message) {
-        ifProjectExist(project -> toast(project, MessageType.INFO, message));
+    public static void info(final String message) {
+        ifProjectExist(new Helper.Callback<Project>() {
+            @Override
+            public void call(Project project) {
+                toast(project, MessageType.INFO, message);
+            }
+        });
     }
 
-    public static void warn(String message) {
-        ifProjectExist(project -> toast(project, MessageType.WARNING, message));
+    public static void warn(final String message) {
+        ifProjectExist(new Helper.Callback<Project>() {
+            @Override
+            public void call(Project project) {
+                toast(project, MessageType.WARNING, message);
+            }
+        });
     }
 
     private static void ifProjectExist(@NotNull Helper.Callback<Project> callback) {

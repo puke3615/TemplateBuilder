@@ -60,7 +60,11 @@ public class Helper {
             callback.call(data);
         } catch (Throwable e) {
             String errorMsg = e.getMessage();
-            ToastManager.error(isEmpty(errorMsg) ? "Unknown error." : errorMsg);
+            if (e instanceof ArrayIndexOutOfBoundsException) {
+                ToastManager.error("Please confirm that the file path contains \"src/main/java\"");
+            } else {
+                ToastManager.error(isEmpty(errorMsg) ? "Unknown error." : errorMsg);
+            }
         }
     }
 

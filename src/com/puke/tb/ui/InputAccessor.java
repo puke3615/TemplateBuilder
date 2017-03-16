@@ -33,9 +33,19 @@ public class InputAccessor extends JDialog {
         _defaultText.setVisible(false);
         syncData(defaultData);
 
-        buttonOK.addActionListener(e -> onOK());
+        buttonOK.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                onOK();
+            }
+        });
 
-        buttonCancel.addActionListener(e -> onCancel());
+        buttonCancel.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                onCancel();
+            }
+        });
 
 // onComplete onCancel() when cross is clicked
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
@@ -46,29 +56,38 @@ public class InputAccessor extends JDialog {
         });
 
 // onComplete onCancel() on ESCAPE
-        contentPane.registerKeyboardAction(e -> onCancel(),
+        contentPane.registerKeyboardAction(
+                new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        onCancel();
+                    }
+                },
                 KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
 
-        _type.addItemListener(e -> {
-            if (e.getStateChange() == ItemEvent.SELECTED) {
-                refreshDefaultValueUI();
+        _type.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                if (e.getStateChange() == ItemEvent.SELECTED) {
+                    refreshDefaultValueUI();
+                }
             }
         });
 
     }
 
     private void refreshDefaultValueUI() {
-        switch (getSelectedType()) {
-            case "boolean":
-                _defaultText.setVisible(false);
-                _defaultSelected.setVisible(true);
-                _defaultSelected.setSelected(false);
-                break;
-            case "string":
-                _defaultSelected.setVisible(false);
-                _defaultText.setVisible(true);
-                _defaultText.setText(null);
-                break;
+        String s = getSelectedType();
+        if ("boolean".equals(s)) {
+            _defaultText.setVisible(false);
+            _defaultSelected.setVisible(true);
+            _defaultSelected.setSelected(false);
+
+        } else if ("string".equals(s)) {
+            _defaultSelected.setVisible(false);
+            _defaultText.setVisible(true);
+            _defaultText.setText(null);
+
         }
     }
 
@@ -81,19 +100,17 @@ public class InputAccessor extends JDialog {
         setText(_help, data.help);
         String type = data.type;
 
-        switch (type) {
-            case "boolean":
-                _type.setSelectedItem(type);
-                refreshDefaultValueUI();
-                boolean isSelected = Boolean.valueOf(data.defaultValue);
-                _defaultSelected.setSelected(isSelected);
-                break;
-            case "string":
-                _type.setSelectedItem(type);
-                refreshDefaultValueUI();
-                setText(_defaultText, data.defaultValue);
-            default:
-                break;
+        if ("boolean".equals(type)) {
+            _type.setSelectedItem(type);
+            refreshDefaultValueUI();
+            boolean isSelected = Boolean.valueOf(data.defaultValue);
+            _defaultSelected.setSelected(isSelected);
+
+        } else if ("string".equals(type)) {
+            _type.setSelectedItem(type);
+            refreshDefaultValueUI();
+            setText(_defaultText, data.defaultValue);
+
         }
     }
 
@@ -184,13 +201,13 @@ public class InputAccessor extends JDialog {
     }
 
     private String getDefaultValue() {
-        switch (getSelectedType()) {
-            case "boolean":
-                return String.valueOf(_defaultSelected.isSelected());
-            case "string":
-                return getText(_defaultText);
-            default:
-                return "";
+        String s = getSelectedType();
+        if ("boolean".equals(s)) {
+            return String.valueOf(_defaultSelected.isSelected());
+        } else if ("string".equals(s)) {
+            return getText(_defaultText);
+        } else {
+            return "";
         }
 
     }

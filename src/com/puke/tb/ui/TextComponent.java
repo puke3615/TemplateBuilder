@@ -21,7 +21,7 @@ public class TextComponent {
         return _text.getText().trim();
     }
 
-    public void onInit(TextOperation textOperation) {
+    public void onInit(final TextOperation textOperation) {
         this.textOperation = textOperation;
         panel1.addComponentListener(new ComponentAdapter() {
             @Override

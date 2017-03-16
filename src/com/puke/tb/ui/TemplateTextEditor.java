@@ -1,14 +1,13 @@
 package com.puke.tb.ui;
 
+import com.puke.template.Operation;
 import com.puke.template.Processor;
 import com.puke.template.TextOperation;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.KeyEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,7 +18,7 @@ public class TemplateTextEditor extends JDialog {
     private JButton buttonOK;
     private JButton buttonCancel;
     private JTabbedPane _tab;
-    private final List<TextComponent> textComponents = new ArrayList<>();
+    private final List<TextComponent> textComponents = new ArrayList<TextComponent>();
 
     public TemplateTextEditor(@NotNull Processor processor, @NotNull UICallback callback) {
         this.processor = processor;
@@ -28,9 +27,19 @@ public class TemplateTextEditor extends JDialog {
         setModal(true);
         getRootPane().setDefaultButton(buttonOK);
 
-        buttonOK.addActionListener(e -> onOK());
+        buttonOK.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                onOK();
+            }
+        });
 
-        buttonCancel.addActionListener(e -> onCancel());
+        buttonCancel.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                onCancel();
+            }
+        });
 
 // call onCancel() when cross is clicked
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
@@ -41,22 +50,27 @@ public class TemplateTextEditor extends JDialog {
         });
 
 // call onCancel() on ESCAPE
-        contentPane.registerKeyboardAction(e -> onCancel(), KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+        contentPane.registerKeyboardAction(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                onCancel();
+            }
+        }, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
 
         initTab();
     }
 
     private void initTab() {
         _tab.removeAll();
-        processor.getOperations().stream()
-                .filter(operation -> operation instanceof TextOperation)
-                .forEach(operation -> {
-                    TextOperation textOperation = (TextOperation) operation;
-                    TextComponent textComponent = new TextComponent();
-                    textComponent.onInit(textOperation);
-                    _tab.add(textOperation.getActualFileName(), textComponent.getPanel());
-                    textComponents.add(textComponent);
-                });
+        for (Operation operation : processor.getOperations()) {
+            if (operation instanceof TextOperation) {
+                TextOperation textOperation = (TextOperation) operation;
+                TextComponent textComponent = new TextComponent();
+                textComponent.onInit(textOperation);
+                _tab.add(textOperation.getActualFileName(), textComponent.getPanel());
+                textComponents.add(textComponent);
+            }
+        }
     }
 
     private void onOK() {
