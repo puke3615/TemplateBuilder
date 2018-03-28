@@ -2,7 +2,7 @@
 
 > `声明`
 >
-> Android Studio的模板包括以下三种，这里讲的是第三种Multi Template。在阅读本文之前，默认你是了解该模板的，知道为什么要使用它，如果不清楚它是什么，可以在网上自行查阅相关资料，当然也可以直接[点击这里](https://puke3615.github.io/2017/03/10/Android%20Studio%20Template/)查看一下同行们对它的评价
+> Android Studio的模板包括以下三种，这里讲的是第三种Multi Template。在阅读本文之前，默认你是了解该模板的，知道为什么要使用它，如果不清楚它是什么，可以在网上自行查阅相关资料，当然也可以直接[点击这里](https://puke3615.github.io/2017/03/10/Android-Studio-Template/)查看一下同行们对它的评价
 >
 > - Live Template：代码片段级别
 > - File Template：单文件级别

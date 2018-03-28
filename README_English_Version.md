@@ -2,7 +2,7 @@
 
 > `Statement`
 >
-> Android Studio templates include the following three, here is the third Multi Template. Before reading this article, Acquiescence you know the template, know why to use it, if it is not clear what it is, you can check the relevant information online, of course, you can also [click here](https://puke3615.github.io/2017/03/10/Android%20Studio%20Template/) to see the peer to its evaluation
+> Android Studio templates include the following three, here is the third Multi Template. Before reading this article, Acquiescence you know the template, know why to use it, if it is not clear what it is, you can check the relevant information online, of course, you can also [click here](https://puke3615.github.io/2017/03/10/Android-Studio-Template/) to see the peer to its evaluation
 >
 > - Live Template：Code snippet level
 > - File Template：Single file level
