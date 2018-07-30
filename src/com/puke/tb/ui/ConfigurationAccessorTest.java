@@ -1,5 +1,6 @@
 package com.puke.tb.ui;
 
+import com.puke.tb.CustomProcessor;
 import com.puke.template.Processor;
 
 /**
@@ -9,7 +10,7 @@ import com.puke.template.Processor;
 public class ConfigurationAccessorTest {
 
     public static void main(String[] args) {
-        Processor processor = new Processor(null);
+        Processor processor = new CustomProcessor(null);
         ConfigurationAccessor.FormData formData = new ConfigurationAccessor.FormData("abc", "456", "123", null, null);
         ConfigurationAccessor accessor = new ConfigurationAccessor(processor, formData);
         accessor.setCallback(new UICallback() {

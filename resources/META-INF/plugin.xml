@@ -1,11 +1,11 @@
 <idea-plugin version="2">
     <id>TemplateBuilder</id>
     <name>TemplateBuilder</name>
-    <version>2.0</version>
+    <version>2.1</version>
     <vendor email="1129090915@qq.com" url="http://puke3615.github.io">Contact me</vendor>
 
     <description><![CDATA[
-      <b><a href="https://puke3615.github.io/2017/03/06/TemplateBuilder/">Click Here For User Guide</a><br></b>
+      <b><a href="https://puke3615.github.io/2017/03/06/TemplateBuilder%5bChinese%5d">Click Here For User Guide</a><br></b>
       <br>
       <b>Quick Start</b><br><hr>
       1. Select .java or .xml(layout resource) files<br>
@@ -17,6 +17,9 @@
     ]]></description>
 
     <change-notes><![CDATA[
+      <b>v2.1</b><br>
+      1. Fix conflict issue when merge AndroidManifest.xml<br>
+      <br>
       <b>v2.0</b><br>
       1. Compat for jdk1.6+<br>
       2. Compat multi IntelliJ products<br>

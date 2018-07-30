@@ -46,7 +46,7 @@ public class SelectionAction extends AnAction {
         }
         String category = getDefaultCategory(event);
         Target target = targetResolver.resolveFiles(new ArrayList<SelectItem>(selectedFiles));
-        final Processor processor = new Processor(target);
+        final Processor processor = new CustomProcessor(target);
 
         ConfigurationAccessor.FormData formData = new ConfigurationAccessor.FormData(Helper.getTemplatePath(), Helper.getCategory(), category, null, null);
         ConfigurationAccessor accessor = new ConfigurationAccessor(processor, formData);
